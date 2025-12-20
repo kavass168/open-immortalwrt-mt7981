@@ -2,25 +2,25 @@
 
 echo "=== SL3000 环境自检开始 ==="
 
-# 1. 检查 mt7981.mk 是否存在
-if [ ! -f "openwrt/target/linux/mediatek/image/mt7981.mk" ]; then
-    echo "❌ 缺少 mt7981.mk"
+# 1. 检查 filogic.mk 是否存在
+if [ ! -f "openwrt/target/linux/mediatek/image/filogic.mk" ]; then
+    echo "❌ 缺少 filogic.mk"
     exit 1
 else
-    echo "✅ mt7981.mk 存在"
+    echo "✅ filogic.mk 存在"
 fi
 
-# 2. 检查 mt7981.mk 是否包含设备定义
-grep -q "Device/sl3000-emmc" openwrt/target/linux/mediatek/image/mt7981.mk
+# 2. 检查 filogic.mk 是否包含设备定义
+grep -q "Device/sl3000-emmc" openwrt/target/linux/mediatek/image/filogic.mk
 if [ $? -ne 0 ]; then
-    echo "❌ mt7981.mk 中没有 Device/sl3000-emmc 定义"
+    echo "❌ filogic.mk 中没有 Device/sl3000-emmc 定义"
     exit 1
 else
-    echo "✅ mt7981.mk 中包含 Device/sl3000-emmc"
+    echo "✅ filogic.mk 中包含 Device/sl3000-emmc"
 fi
 
 # 3. 检查 DTS 路径
-if [ ! -f "openwrt/target/linux/mediatek/files-5.15/arch/arm64/boot/dts/mediatek/mt7981b-sl3000-emmc.dts" ]; then
+if [ ! -f "openwrt/target/linux/mediatek/files-5.15/arch/arm64/boot/dts/mediatek/mt7981-sl3000-emmc.dts" ]; then
     echo "❌ DTS 文件不存在"
     exit 1
 else
