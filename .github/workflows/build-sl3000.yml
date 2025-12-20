@@ -1,12 +1,16 @@
 name: Build SL3000 Firmware
 
+permissions:
+  contents: write
+  actions: write
+
 on:
   workflow_dispatch:
     inputs:
       code:
         description: "请输入验证码（必须输入 3000 才能继续构建）"
         required: true
-        default: "3000"
+        default: "0000"
 
 jobs:
   build:
@@ -64,7 +68,7 @@ jobs:
         echo "=== yourrepo 目录结构 ==="
         ls -R yourrepo || true
 
-        # 覆盖 filogic.mk（你的设备定义所在文件）
+        # 覆盖 filogic.mk
         cp yourrepo/image/filogic.mk \
            openwrt/target/linux/mediatek/image/
 
