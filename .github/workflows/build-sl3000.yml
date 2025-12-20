@@ -1,10 +1,12 @@
 name: Build SL3000 Firmware
 
 on:
-  workflow_dispatch:   # 手动触发，输入验证码 3000
-  push:
-    branches:
-      - main
+  workflow_dispatch:   # 只允许手动触发
+    inputs:
+      code:
+        description: '验证码'
+        required: true
+        default: '3000'
 
 jobs:
   build:
