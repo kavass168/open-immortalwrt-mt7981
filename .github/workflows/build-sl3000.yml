@@ -2,11 +2,6 @@ name: Build SL3000 (ImmortalWrt 25.12)
 
 on:
   workflow_dispatch:
-    inputs:
-      code:
-        description: '验证码'
-        required: true
-        default: '3000'
 
 permissions:
   contents: write
@@ -35,7 +30,7 @@ jobs:
           cp dts/mt7981-sl3000-emmc.dts openwrt/target/linux/mediatek/dts/
           cp config/sl3000.config openwrt/.config
 
-      # ✅ 4. 运行你的检测脚本（你特别强调必须加）
+      # 4. 运行新版检测脚本（检查 openwrt/ 目录）
       - name: Run SL3000 environment check
         run: |
           chmod +x scripts/check-sl3000-env.sh
