@@ -1,6 +1,5 @@
-name: Build SL3000 Firmware
+name: Build SL3000 (ImmortalWrt 25.12)
 
-# ✅ 只允许手动触发
 on:
   workflow_dispatch:
     inputs:
@@ -9,7 +8,6 @@ on:
         required: true
         default: '3000'
 
-# ✅ 允许推送 tag（修复 403）
 permissions:
   contents: write
 
@@ -18,17 +16,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. 拉取代码
-      - name: Checkout
+      # 1. 拉取你自己的仓库（包含三件套）
+      - name: Checkout SL3000 repo
         uses: actions/checkout@v4
 
-      # 2. 安装依赖
-      - name: Setup build environment
+      # 2. 克隆 ImmortalWrt 25.12 源码
+      - name: Clone ImmortalWrt 25.12
         run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential git ccache
+          git clone --branch openwrt-25.12 https://github.com/immortalwrt/immortalwrt.git openwrt
+          cd openwrt
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
 
-      # 3. 磁盘优化（释放空间）
+      # 3. 覆盖三件套到官方源码
+      - name: Apply SL3000 device files
+        run: |
+          cp image/filogic.mk openwrt/target/linux/mediatek/image/
+          cp dts/mt7981-sl3000-emmc.dts openwrt/target/linux/mediatek/dts/
+          cp config/sl3000.config openwrt/.config
+
+      # 4. 磁盘优化
       - name: Expand disk space
         run: |
           sudo rm -rf /usr/share/dotnet
@@ -36,18 +43,7 @@ jobs:
           sudo rm -rf /usr/local/lib/android
           df -h
 
-      # 4. 自动准备 .config（修复 .config 缺失问题）
-      - name: Prepare config
-        run: |
-          cp config/sl3000.config .config
-
-      # 5. 运行 SL3000 环境检测脚本（已修复）
-      - name: Check SL3000 environment
-        run: |
-          chmod +x scripts/check-sl3000-env.sh
-          ./scripts/check-sl3000-env.sh
-
-      # 6. ccache 缓存
+      # 5. ccache 缓存
       - name: Cache ccache
         uses: actions/cache@v4
         with:
@@ -56,7 +52,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-ccache-
 
-      # 7. dl 缓存
+      # 6. dl 缓存
       - name: Cache dl
         uses: actions/cache@v4
         with:
@@ -65,7 +61,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-dl-
 
-      # 8. 自动创建 tag（使用 GITHUB_TOKEN 推送，不会 403）
+      # 7. 自动创建 tag（不会 403）
       - name: Create tag
         run: |
           git config user.name "github-actions"
@@ -75,23 +71,25 @@ jobs:
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} $TAG
           echo "TAG=$TAG" >> $GITHUB_ENV
 
-      # 9. 构建固件（单设备 SL3000）
+      # 8. 构建固件
       - name: Build firmware
         run: |
+          cd openwrt
+          make defconfig
           make -j$(nproc)
 
-      # 10. 生成 sha256sum 校验文件
+      # 9. 生成 sha256sum
       - name: Generate sha256sum
         run: |
-          cd bin/targets/mediatek/filogic
+          cd openwrt/bin/targets/mediatek/filogic
           sha256sum *.bin > sha256sum.txt
 
-      # 11. 发布 Release
+      # 10. 发布 Release
       - name: Release firmware
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.TAG }}
-          name: "SL3000 Firmware ${{ env.TAG }}"
+          name: "SL3000 ImmortalWrt 25.12 ${{ env.TAG }}"
           files: |
-            bin/targets/mediatek/filogic/*.bin
-            bin/targets/mediatek/filogic/sha256sum.txt
+            openwrt/bin/targets/mediatek/filogic/*.bin
+            openwrt/bin/targets/mediatek/filogic/sha256sum.txt
