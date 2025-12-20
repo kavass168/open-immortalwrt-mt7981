@@ -6,7 +6,7 @@ on:
       code:
         description: "请输入验证码（必须输入 3000 才能继续构建）"
         required: true
-        default: "0000"
+        default: "3000"
 
 jobs:
   build:
@@ -46,11 +46,11 @@ jobs:
       with:
         path: yourrepo
 
-    - name: Checkout official OpenWrt 23.05
+    - name: Checkout ImmortalWrt 25.12
       uses: actions/checkout@v4
       with:
-        repository: openwrt/openwrt
-        ref: openwrt-23.05
+        repository: immortalwrt/immortalwrt
+        ref: openwrt-25.12
         path: openwrt
 
     - name: Update feeds
@@ -64,29 +64,29 @@ jobs:
         echo "=== yourrepo 目录结构 ==="
         ls -R yourrepo || true
 
-        # 覆盖 mt7981.mk（你的设备定义所在文件）
-        cp yourrepo/target/linux/mediatek/image/mt7981.mk \
+        # 覆盖 filogic.mk（你的设备定义所在文件）
+        cp yourrepo/image/filogic.mk \
            openwrt/target/linux/mediatek/image/
 
         # 覆盖 DTS
-        mkdir -p openwrt/target/linux/mediatek/files-5.15/arch/arm64/boot/dts/mediatek/
-        cp yourrepo/target/linux/mediatek/files-5.15/arch/arm64/boot/dts/mediatek/*.dts \
-           openwrt/target/linux/mediatek/files-5.15/arch/arm64/boot/dts/mediatek/
+        mkdir -p openwrt/target/linux/mediatek/dts/
+        cp yourrepo/dts/*.dts \
+           openwrt/target/linux/mediatek/dts/
 
-        # 使用你真实路径的 sl3000.config
-        cp yourrepo/configs/sl3000.config openwrt/.config
+        # 覆盖 sl3000.config
+        cp yourrepo/config/sl3000.config openwrt/.config
 
     - name: Verify custom device files (三件套验证)
       run: |
         cd openwrt
 
-        echo "=== 验证 mt7981.mk 是否覆盖成功 ==="
-        grep -q "sl3000-emmc" target/linux/mediatek/image/mt7981.mk \
-          && echo "✅ mt7981.mk 已覆盖" \
-          || { echo "❌ mt7981.mk 未覆盖"; exit 1; }
+        echo "=== 验证 filogic.mk 是否覆盖成功 ==="
+        grep -q "sl3000-emmc" target/linux/mediatek/image/filogic.mk \
+          && echo "✅ filogic.mk 已覆盖" \
+          || { echo "❌ filogic.mk 未覆盖"; exit 1; }
 
         echo "=== 验证 DTS 是否存在 ==="
-        test -f target/linux/mediatek/files-5.15/arch/arm64/boot/dts/mediatek/mt7981b-sl3000-emmc.dts \
+        test -f target/linux/mediatek/dts/mt7981-sl3000-emmc.dts \
           && echo "✅ DTS 已覆盖" \
           || { echo "❌ DTS 未覆盖"; exit 1; }
 
@@ -100,11 +100,6 @@ jobs:
         cd openwrt
         echo "CONFIG_DEVEL=y" >> .config
         echo "CONFIG_CCACHE=y" >> .config
-        # 如需 initramfs / factory，可在此追加额外 CONFIG
-        # echo "CONFIG_TARGET_INITRAMFS_COMPRESSION_LZMA=y" >> .config
-        # echo "CONFIG_TARGET_ROOTFS_INITRAMFS=y" >> .config
-        # echo "CONFIG_TARGET_IMAGES_GZIP=y" >> .config
-        # echo "CONFIG_TARGET_IMAGES_PAD=y" >> .config
         make defconfig
         make -j$(nproc) V=s 2>&1 | tee build.log || make -j1 V=s 2>&1 | tee build.log
 
@@ -116,7 +111,7 @@ jobs:
         echo "Build Time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> bin/targets/buildinfo/build-info.txt
         echo "Git Branch: ${{ github.ref }}" >> bin/targets/buildinfo/build-info.txt
         echo "Git Commit: ${{ github.sha }}" >> bin/targets/buildinfo/build-info.txt
-        echo "OpenWrt Version: 23.05" >> bin/targets/buildinfo/build-info.txt
+        echo "OpenWrt Version: 25.12" >> bin/targets/buildinfo/build-info.txt
 
     - name: 保存 ccache 缓存
       uses: actions/cache@v4
