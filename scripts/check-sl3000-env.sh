@@ -27,7 +27,19 @@ else
     echo "✅ DTS 文件存在"
 fi
 
-# 4. 检查 defconfig 后是否启用 SL3000
+# 4. 检查或准备 .config
+if [ ! -f ".config" ]; then
+    echo "⚠️ 未找到 .config，自动复制 config/sl3000.config"
+    if [ -f "config/sl3000.config" ]; then
+        cp config/sl3000.config .config
+        echo "✅ 已复制 config/sl3000.config → .config"
+    else
+        echo "❌ 缺少 config/sl3000.config，无法生成 .config"
+        exit 1
+    fi
+fi
+
+# 5. 检查 .config 是否启用 SL3000
 grep -q "CONFIG_TARGET_mediatek_filogic_DEVICE_sl3000-emmc=y" .config
 if [ $? -ne 0 ]; then
     echo "❌ .config 中未启用 SL3000"
