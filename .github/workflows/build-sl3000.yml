@@ -16,11 +16,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. 拉取你自己的仓库（包含三件套）
+      # 1. 拉取你自己的仓库（三件套）
       - name: Checkout SL3000 repo
         uses: actions/checkout@v4
 
-      # 2. 克隆 ImmortalWrt 25.12 源码
+      # 2. 克隆 ImmortalWrt 25.12 官方源码
       - name: Clone ImmortalWrt 25.12
         run: |
           git clone --branch openwrt-25.12 https://github.com/immortalwrt/immortalwrt.git openwrt
