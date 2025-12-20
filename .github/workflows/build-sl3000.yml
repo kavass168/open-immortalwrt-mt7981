@@ -1,12 +1,17 @@
 name: Build SL3000 Firmware
 
+# ✅ 只允许手动触发
 on:
-  workflow_dispatch:   # 只允许手动触发
+  workflow_dispatch:
     inputs:
       code:
         description: '验证码'
         required: true
         default: '3000'
+
+# ✅ 允许推送 tag（修复 403）
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -31,12 +36,12 @@ jobs:
           sudo rm -rf /usr/local/lib/android
           df -h
 
-      # 4. 准备 .config（复制 sl3000.config）
+      # 4. 自动准备 .config（修复 .config 缺失问题）
       - name: Prepare config
         run: |
           cp config/sl3000.config .config
 
-      # 5. SL3000 环境自检
+      # 5. 运行 SL3000 环境检测脚本（已修复）
       - name: Check SL3000 environment
         run: |
           chmod +x scripts/check-sl3000-env.sh
@@ -60,14 +65,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-dl-
 
-      # 8. 自动打 tag
+      # 8. 自动创建 tag（使用 GITHUB_TOKEN 推送，不会 403）
       - name: Create tag
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
           TAG="v$(date +'%Y%m%d')-${{ github.run_number }}"
           git tag $TAG
-          git push origin $TAG
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} $TAG
           echo "TAG=$TAG" >> $GITHUB_ENV
 
       # 9. 构建固件（单设备 SL3000）
