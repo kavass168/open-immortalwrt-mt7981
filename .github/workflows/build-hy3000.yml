@@ -33,12 +33,7 @@ jobs:
           sudo chown $USER:$USER /mnt/build_wrt
           sudo ln -s /mnt/build_wrt $GITHUB_WORKSPACE/openwrt
           df -h
-
-          sudo mkdir -p /mnt/build_wrt
-          sudo chown $USER:$USER /mnt/build_wrt
-          sudo ln -s /mnt/build_wrt $GITHUB_WORKSPACE/openwrt
-
-          
+         
 
       # 2. 克隆 ImmortalWrt 25.12 官方源码
       - name: Clone ImmortalWrt 25.12
@@ -110,6 +105,7 @@ jobs:
         id: build_step
         run: |
           cd openwrt
+          ls -l
           make defconfig
           make -j$(nproc) V=s || echo "BUILD_FAILED=true" >> $GITHUB_ENV
 
