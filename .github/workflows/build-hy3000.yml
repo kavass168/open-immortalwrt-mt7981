@@ -14,6 +14,20 @@ jobs:
       # 1. 拉取你自己的仓库（三件套 + 检测脚本）
       #- name: Checkout open-immortalwrt-mt7981 repo
       #  uses: actions/checkout@v4
+      - name: Initialization Environment
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo -E apt -yqq purge firefox
+          sudo -E apt -yqq update
+          sudo -E apt -yqq full-upgrade
+          sudo -E apt -yqq autoremove --purge
+          sudo -E apt -yqq autoclean
+          sudo -E apt -yqq clean
+          sudo -E apt -yqq install dos2unix python3-netifaces libfuse-dev
+          sudo bash -c 'bash <(curl -sL https://build-scripts.immortalwrt.org/init_build_environment.sh)'
+          sudo -E systemctl daemon-reload
+          sudo -E timedatectl set-timezone "Asia/Shanghai"
 
       # 2. 克隆 ImmortalWrt 25.12 官方源码
       - name: Clone ImmortalWrt 25.12
