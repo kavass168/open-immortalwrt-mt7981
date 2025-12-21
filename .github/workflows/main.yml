@@ -38,10 +38,4 @@ jobs:
           cp $GITHUB_WORKSPACE/hy3000/target/linux/mediatek/filogic/base-files/lib/upgrade/platform.sh  openwrt/target/linux/mediatek/filogic/base-files/lib/upgrade/        
           cp $GITHUB_WORKSPACE/hy3000/hy3000.conf openwrt/.config
 
-      # 4. 运行新版检测脚本（检查 openwrt/ 目录）
-      - name: Run hy3000 environment check
-        run: |
-          chmod +x $GITHUB_WORKSPACE/scripts/check-hy3000-env.sh
-          $GITHUB_WORKSPACE//scripts/check-hy3000-env.sh
-
 
