@@ -11,25 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. 拉取你自己的仓库（三件套 + 检测脚本）
-      #- name: Checkout open-immortalwrt-mt7981 repo
-      #  uses: actions/checkout@v4
-      - name: Initialization Environment
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        run: |
-          sudo -E apt -yqq purge firefox
-          sudo -E apt -yqq update
-          sudo -E apt -yqq full-upgrade
-          sudo -E apt -yqq autoremove --purge
-          sudo -E apt -yqq autoclean
-          sudo -E apt -yqq clean
-          sudo -E apt -yqq install dos2unix python3-netifaces libfuse-dev
-          sudo bash -c 'bash <(curl -sL https://build-scripts.immortalwrt.org/init_build_environment.sh)'
-          sudo -E systemctl daemon-reload
-          sudo -E timedatectl set-timezone "Asia/Shanghai"
-     
-      # 5. 最大化磁盘空间（避免爆盘）
+       1. 拉取你自己的仓库（三件套 + 检测脚本）
+      - name: Checkout open-immortalwrt-mt7981
+        uses: actions/checkout@v4
+          
       - name: Expand disk space
         run: |
           echo "Before cleanup:"
@@ -41,16 +26,9 @@ jobs:
           sudo docker system prune -af || true
           echo "After cleanup:"
           df -h
+          ls -l
           
-
-      # 2. 克隆 ImmortalWrt 25.12 官方源码
-      - name: Clone ImmortalWrt 25.12
-        run: |
-          git clone --branch openwrt-25.12 https://github.com/immortalwrt/immortalwrt.git openwrt
-          cd openwrt
-          ./scripts/feeds update -a
-          ./scripts/feeds install -a
-
+          
       # 3. 覆盖适配文件到官方源码
       - name: Apply HY3000 device files
         run: |
@@ -67,80 +45,3 @@ jobs:
           $GITHUB_WORKSPACE//scripts/check-hy3000-env.sh
 
 
-
-     # 6. ccache 缓存
-      - name: Cache ccache
-        uses: actions/cache@v4
-        with:
-          path: ~/.ccache
-          key: ${{ runner.os }}-ccache-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-ccache-
-
-      # 7. dl 缓存
-      - name: Cache dl
-        uses: actions/cache@v4
-        with:
-          path: openwrt/dl
-          key: ${{ runner.os }}-dl-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-dl-
-
-      # 8. 创建 tag（使用 GITHUB_TOKEN）
-      - name: Create tag
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          TAG="v$(date +'%Y%m%d')-${{ github.run_number }}"
-          git tag $TAG
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} $TAG
-          echo "TAG=$TAG" >> $GITHUB_ENV
-
-      # 9. 编译固件（失败时标记 BUILD_FAILED）
-      - name: Build firmware
-        id: build_step
-        run: |
-          cd openwrt
-          make defconfig
-          make -j$(nproc) V=s || echo "BUILD_FAILED=true" >> $GITHUB_ENV
-
-      # 10. 提取最后 500 行错误日志
-      - name: Extract last 500 lines of build log
-        if: env.BUILD_FAILED == 'true'
-        run: |
-          cd openwrt
-          tail -n 500 build.log > ../last_500_lines.txt || true
-
-      # 11. 上传所有日志（失败时）
-      - name: Upload logs
-        if: env.BUILD_FAILED == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: build_logs
-          path: |
-            last_500_lines.txt
-            openwrt/build.log
-            openwrt/logs/
-            **/*.txt
-
-      # 12. 生成 sha256sum（成功时）
-      - name: Generate sha256sum
-        if: env.BUILD_FAILED != 'true'
-        run: |
-          cd openwrt/bin/targets/mediatek/filogic
-          sha256sum *.bin > sha256sum.txt
-
-      # 13. 发布 Release（成功时）
-      - name: Release firmware
-        if: env.BUILD_FAILED != 'true'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ env.TAG }}
-          name: "HY3000 WiFi 路由器纯净版 ${{ env.TAG }}"
-          files: |
-            openwrt/bin/targets/mediatek/filogic/*.bin
-            openwrt/bin/targets/mediatek/filogic/*.itb
-            openwrt/bin/targets/mediatek/filogic/*.fip
-            openwrt/bin/targets/mediatek/filogic/config*.txt
-            openwrt/bin/targets/mediatek/filogic/sha256sum.txt
-            openwrt/.config
