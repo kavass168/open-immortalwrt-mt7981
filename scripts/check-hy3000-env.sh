@@ -12,12 +12,12 @@ else
     echo "✅ filogic.mk 存在"
 fi
 
-grep -q "Device/hy3000" "$ROOT/target/linux/mediatek/image/filogic.mk"
+grep -q "Device/philips_hy3000" "$ROOT/target/linux/mediatek/image/filogic.mk"
 if [ $? -ne 0 ]; then
-    echo "❌ filogic.mk 中没有 Device/hy3000 定义"
+    echo "❌ filogic.mk 中没有 Device/philips_hy3000 定义"
     exit 1
 else
-    echo "✅ filogic.mk 中包含 Device/hy3000"
+    echo "✅ filogic.mk 中包含 Device/philips_hy3000"
 fi
 
 # 2. 检查 DTS
