@@ -3,6 +3,10 @@ name: Build HY3000 (ImmortalWrt 25.12)
 on:
   workflow_dispatch:
 
+env:
+  DIY_P1_SH: diy-part1.sh
+  DIY_P2_SH: diy-part2.sh
+  
 permissions:
   contents: write
 
@@ -60,11 +64,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-dl-
 
+      - name: Load custom feeds
+        run: |
+          chmod +x $GITHUB_WORKSPACE/$DIY_P1_SH
+          $GITHUB_WORKSPACE/$DIY_P1_SH
+
+
       - name: Update Feeds
         run: |
           cd openwrt
           ./scripts/feeds update -a
           ./scripts/feeds install -a
+          
+      - name: Load custom configuration
+        run: |
+          chmod +x $GITHUB_WORKSPACE/$DIY_P2_SH
+          $GITHUB_WORKSPACE/$DIY_P2_SH
 
       # 3. 覆盖适配文件到官方源码
       - name: Apply HY3000 device files
