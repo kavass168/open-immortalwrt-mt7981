@@ -54,7 +54,7 @@ jobs:
       # 3. 覆盖适配文件到官方源码
       - name: Apply HY3000 device files
         run: |
-          cp  $GITHUB_WORKSPACE/hy3000/target/linux/mediatek/image/filogic.mk openwrt/target/linux/mediatek/image/
+          cp $GITHUB_WORKSPACE/hy3000/target/linux/mediatek/image/filogic.mk openwrt/target/linux/mediatek/image/
           cp $GITHUB_WORKSPACE/hy3000/target/linux/mediatek/dts/mt7981b-philips-hy3000.dts openwrt/target/linux/mediatek/dts/
           cp $GITHUB_WORKSPACE/hy3000/target/linux/mediatek/filogic/base-files/etc/board.d/02_network openwrt/target/linux/mediatek/filogic/base-files/etc/board.d/
           cp $GITHUB_WORKSPACE/hy3000/target/linux/mediatek/filogic/base-files/lib/upgrade/platform.sh  openwrt/target/linux/mediatek/filogic/base-files/lib/upgrade/        
