@@ -1,4 +1,4 @@
-name: Build SL3000 (ImmortalWrt 25.12)
+name: Build HY3000 (ImmortalWrt 25.12)
 
 on:
   workflow_dispatch:
