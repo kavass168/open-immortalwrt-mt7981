@@ -38,7 +38,9 @@ jobs:
       # 2. 克隆 ImmortalWrt 25.12 官方源码
       - name: Clone ImmortalWrt 25.12
         run: |
-          git clone --branch openwrt-25.12 https://github.com/immortalwrt/immortalwrt.git ./openwrt/
+          # git clone --branch openwrt-25.12 https://github.com/immortalwrt/immortalwrt.git ./openwrt/
+          git clone --depth=1 --single-branch --branch openwrt-25.12 https://github.com/immortalwrt/immortalwrt.git ./openwrt/
+          
           cd openwrt
           ./scripts/feeds update -a
           ./scripts/feeds install -a
