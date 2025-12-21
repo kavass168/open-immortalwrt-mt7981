@@ -119,7 +119,10 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.TAG }}
-          name: "SL3000 WiFi 路由器纯净版 ${{ env.TAG }}"
+          name: "HY3000 WiFi 路由器纯净版 ${{ env.TAG }}"
           files: |
             openwrt/bin/targets/mediatek/filogic/*.bin
+            openwrt/bin/targets/mediatek/filogic/*.itb
+            openwrt/bin/targets/mediatek/filogic/*.fip
+            openwrt/bin/targets/mediatek/filogic/config*.txt
             openwrt/bin/targets/mediatek/filogic/sha256sum.txt
