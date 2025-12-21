@@ -95,25 +95,20 @@ jobs:
           $GITHUB_WORKSPACE/scripts/check-hy3000-env.sh
           df -h
           
-      # 8. 创建 tag（使用 GITHUB_TOKEN）
-      - name: Create tag
+      - name: Download package
+        id: package
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          TAG="v$(date +'%Y%m%d')-${{ github.run_number }}"
-          git tag $TAG
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} $TAG
-          echo "TAG=$TAG" >> $GITHUB_ENV
+          cd openwrt
+          make defconfig -j$(nproc) && make clean -j$(nproc)
+          make download -j$(nproc)
+          
 
-      # 9. 编译固件（失败时标记 BUILD_FAILED）
+      #  编译固件
       - name: Build firmware
         id: build_step
         run: |
           cd openwrt
           ls -l
-          make defconfig -j$(nproc) && make clean -j$(nproc)
-          make download -j$(nproc)
-          #   make -j$(nproc) V=s || echo "BUILD_FAILED=true" >> $GITHUB_ENV
           df -h
           make -j$(nproc) || make -j1 || make -j1 V=s
           cp -f ./.config ./openwrt/bin/targets/mediatek/filogic/Build-Config.txt
@@ -129,6 +124,10 @@ jobs:
             echo "目录 openwrt/bin/targets/mediatek/filogic 不存在"
           fi
 
+      - name: Check space usage
+        run: |
+          df -hT
+      
       - name: Ensure firmware exists
         run: |
           if [ ! -d openwrt/bin/targets/mediatek/filogic ]; then
