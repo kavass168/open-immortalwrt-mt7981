@@ -12,7 +12,7 @@ jobs:
 
     steps:
       # 1. 拉取你自己的仓库（三件套 + 检测脚本）
-      - name: Checkout SL3000 repo
+      - name: Checkout open-immortalwrt-mt7981 repo
         uses: actions/checkout@v4
 
       # 2. 克隆 ImmortalWrt 25.12 官方源码
@@ -23,18 +23,20 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
 
-      # 3. 覆盖三件套到官方源码
-      - name: Apply SL3000 device files
+      # 3. 覆盖适配文件到官方源码
+      - name: Apply HY3000 device files
         run: |
-          cp image/filogic.mk openwrt/target/linux/mediatek/image/
-          cp dts/mt7981-sl3000-emmc.dts openwrt/target/linux/mediatek/dts/
-          cp config/sl3000.config openwrt/.config
+          cp hy3000/target/linux/mediatek/image/filogic.mk openwrt/target/linux/mediatek/image/
+          cp hy3000/target/linux/mediatek/dts/mt7981b-philips-hy3000.dts openwrt/target/linux/mediatek/dts/
+          cp hy3000/target/linux/mediatek/filogic/base-files/etc/board.d/02_network openwrt/target/linux/mediatek/filogic/base-files/etc/board.d/
+          cp hy3000/target/linux/mediatek/filogic/base-files/lib/upgrade/platform.sh  openwrt/target/linux/mediatek/filogic/base-files/lib/upgrade/        
+          cp hy3000/hy3000.conf openwrt/.config
 
       # 4. 运行新版检测脚本（检查 openwrt/ 目录）
-      - name: Run SL3000 environment check
+      - name: Run hy3000 environment check
         run: |
-          chmod +x scripts/check-sl3000-env.sh
-          ./scripts/check-sl3000-env.sh
+          chmod +x scripts/check-hy3000-env.sh
+          ./scripts/check-hy3000-env.sh
 
       # 5. 磁盘优化
       - name: Expand disk space
