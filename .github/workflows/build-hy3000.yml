@@ -34,6 +34,7 @@ jobs:
           sudo bash -c 'bash <(curl -sL https://build-scripts.immortalwrt.org/init_build_environment.sh)'
           sudo -E systemctl daemon-reload
           sudo -E timedatectl set-timezone "Asia/Shanghai"
+          
           sudo mkdir -p /mnt/build_wrt
           sudo chown $USER:$USER /mnt/build_wrt
           sudo ln -s /mnt/build_wrt $GITHUB_WORKSPACE/openwrt
@@ -159,4 +160,4 @@ jobs:
             openwrt/bin/targets/mediatek/filogic/*.fip
             openwrt/bin/targets/mediatek/filogic/Build-Config.txt
             openwrt/bin/targets/mediatek/filogic/sha256sum.txt
-            openwrt/.config
+     
