@@ -114,50 +114,52 @@ jobs:
           make defconfig -j$(nproc) && make clean -j$(nproc)
           make download -j$(nproc)
           #   make -j$(nproc) V=s || echo "BUILD_FAILED=true" >> $GITHUB_ENV
+          df -h
           make -j$(nproc) || make -j1 || make -j1 V=s
-
-      # 10. 提取最后 500 行错误日志
-      - name: Extract last 500 lines of build log
-        run: |
-          cd openwrt
-          tail -n 100 build.log > ../last_100_lines.txt || true
-
-      # 11. 上传所有日志（失败时）
-      - name: Upload logs
-        if: env.BUILD_FAILED == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: build_logs
-          path: |
-            last_500_lines.txt
-            openwrt/build.log
-            openwrt/logs/
-            **/*.txt
-
-      # 12. 生成 sha256sum（成功时）
-      - name: Generate sha256sum
-        if: env.BUILD_FAILED != 'true'
-        run: |
-          cd openwrt/bin/targets/mediatek/filogic
-          sha256sum *.bin > sha256sum.txt
-
-      # 12. 生成 sha256sum（成功时）
-      - name: Generate sha256sum
-        if: env.BUILD_FAILED != 'true'
-        run: |
           cp -f ./.config ./openwrt/bin/targets/mediatek/filogic/Build-Config.txt
 
-      # 13. 发布 Release（成功时）
+      - name: List firmware files
+        run: |
+          echo "=== bin 目录结构 ==="
+          find openwrt/bin -maxdepth 5 -type f || true
+          echo "=== mediatek/filogic 下文件 ==="
+          if [ -d openwrt/bin/targets/mediatek/filogic ]; then
+            ls -l openwrt/bin/targets/mediatek/filogic || true
+          else
+            echo "目录 openwrt/bin/targets/mediatek/filogic 不存在"
+          fi
+
+      - name: Ensure firmware exists
+        run: |
+          if [ ! -d openwrt/bin/targets/mediatek/filogic ]; then
+            echo "❌ 没有生成 mediatek/filogic 目标目录，固件未产出"
+            exit 1
+          fi
+          COUNT=$(find openwrt/bin/targets/mediatek/filogic -type f ! -name "*.buildinfo" ! -name "*.json" | wc -l)
+          if [ "$COUNT" -eq 0 ]; then
+            echo "❌ mediatek/filogic 目录下没有任何固件文件"
+            exit 1
+          fi
+          echo "✅ 找到 $COUNT 个固件相关文件"
+
+      - name: Generate sha256sum
+        run: |
+          cd openwrt/bin/targets/mediatek/filogic
+          sha256sum * > sha256sum.txt
+
+      - name: Create tag
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          TAG="v$(date +'%Y%m%d')-${{ github.run_number }}"
+          git tag $TAG
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} $TAG
+          echo "TAG=$TAG" >> $GITHUB_ENV
+
       - name: Release firmware
-        if: env.BUILD_FAILED != 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.TAG }}
-          name: "HY3000 WiFi 路由器纯净版 ${{ env.TAG }}"
+          name: "hy3000 ${{ env.TAG }}"
           files: |
-            openwrt/bin/targets/mediatek/filogic/*.bin
-            openwrt/bin/targets/mediatek/filogic/*.itb
-            openwrt/bin/targets/mediatek/filogic/*.fip
-            openwrt/bin/targets/mediatek/filogic/Build-Config.txt
-            openwrt/bin/targets/mediatek/filogic/sha256sum.txt
-     
+            openwrt/bin/targets/mediatek/filogic/*
