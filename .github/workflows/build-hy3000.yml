@@ -28,6 +28,20 @@ jobs:
           sudo bash -c 'bash <(curl -sL https://build-scripts.immortalwrt.org/init_build_environment.sh)'
           sudo -E systemctl daemon-reload
           sudo -E timedatectl set-timezone "Asia/Shanghai"
+     
+      # 5. 最大化磁盘空间（避免爆盘）
+      - name: Expand disk space
+        run: |
+          echo "Before cleanup:"
+          df -h
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/hostedtoolcache
+          sudo docker system prune -af || true
+          echo "After cleanup:"
+          df -h
+          
 
       # 2. 克隆 ImmortalWrt 25.12 官方源码
       - name: Clone ImmortalWrt 25.12
@@ -52,18 +66,7 @@ jobs:
           chmod +x $GITHUB_WORKSPACE/scripts/check-hy3000-env.sh
           $GITHUB_WORKSPACE//scripts/check-hy3000-env.sh
 
-     # 5. 最大化磁盘空间（避免爆盘）
-      - name: Expand disk space
-        run: |
-          echo "Before cleanup:"
-          df -h
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /opt/ghc
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /opt/hostedtoolcache
-          sudo docker system prune -af || true
-          echo "After cleanup:"
-          df -h
+
 
      # 6. ccache 缓存
       - name: Cache ccache
