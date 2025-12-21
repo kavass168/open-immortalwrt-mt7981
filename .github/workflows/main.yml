@@ -21,6 +21,7 @@ jobs:
           ls -l
           echo $GITHUB_WORKSPACE
           sudo mkdir -p /mnt/tt
+          cp $GITHUB_WORKSPACE/hy3000/target/linux/mediatek/image/filogic.mk /mnt/tt/
           ls -l /mnt/tt/
           chmod +x  $GITHUB_WORKSPACE/scripts/check-hy3000-env.sh
            $GITHUB_WORKSPACE/scripts/check-hy3000-env.sh
