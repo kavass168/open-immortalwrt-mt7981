@@ -17,6 +17,10 @@ case "$board" in
 		[ "$PHYNBR" = "0" ] && macaddr_add $addr 1 > /sys${DEVPATH}/macaddress
 		[ "$PHYNBR" = "1" ] && macaddr_setbit_la $addr > /sys${DEVPATH}/macaddress
 		;;
+	philips,hy3000)
+		addr=$(mmc_get_mac_binary factory 0x74)
+		[ "$PHYNBR" = "1" ] && echo "$addr" > /sys${DEVPATH}/macaddress
+		;;
 	acer,predator-w6|\
 	acer,vero-w6m)
 		[ "$PHYNBR" = "0" ] && mmc_get_mac_ascii u-boot-env 2gMAC > /sys${DEVPATH}/macaddress
