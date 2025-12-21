@@ -20,7 +20,7 @@ jobs:
         run: |
           df -h
           ls -l
-          
+          echo $GITHUB_WORKSPACE
 
 
       # 3. 覆盖适配文件到官方源码
