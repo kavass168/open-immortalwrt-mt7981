@@ -91,7 +91,6 @@ platform_do_upgrade() {
 	cmcc,a10-ubootmod|\
 	cmcc,rax3000m|\
 	cmcc,rax3000me|\
-	philips,hy3000|\
 	comfast,cf-wr632ax-ubootmod|\
 	cudy,tr3000-v1-ubootmod|\
 	gatonetworks,gdsp|\
@@ -142,6 +141,7 @@ platform_do_upgrade() {
 	smartrg,sdg-8632|\
 	smartrg,sdg-8733|\
 	smartrg,sdg-8733a|\
+	philips,hy3000|\
 	smartrg,sdg-8734)
 		CI_KERNPART="kernel"
 		CI_ROOTPART="rootfs"
@@ -283,7 +283,6 @@ platform_check_image() {
 	cetron,ct3003-ubootmod|\
 	cmcc,a10-ubootmod|\
 	cmcc,rax3000m|\
-	philips,hy3000|\
 	cmcc,rax3000me|\
 	comfast,cf-wr632ax-ubootmod|\
 	cudy,tr3000-v1-ubootmod|\
@@ -360,6 +359,7 @@ platform_copy_config() {
 	smartrg,sdg-8733|\
 	smartrg,sdg-8733a|\
 	smartrg,sdg-8734|\
+	philips,hy3000|\
 	ubnt,unifi-6-plus)
 		emmc_copy_config
 		;;
@@ -371,7 +371,6 @@ platform_copy_config() {
 	bananapi,bpi-r4-lite|\
 	cmcc,rax3000m|\
 	cmcc,rax3000me|\
-	philips,hy3000|\
 	gatonetworks,gdsp|\
 	mediatek,mt7988a-rfb)
 		if [ "$CI_METHOD" = "emmc" ]; then
