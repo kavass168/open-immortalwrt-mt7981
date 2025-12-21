@@ -19,6 +19,7 @@ jobs:
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
+          df -h
           sudo -E apt -yqq purge firefox
           sudo -E apt -yqq update
           sudo -E apt -yqq full-upgrade
@@ -40,7 +41,47 @@ jobs:
         run: |
           # git clone --branch openwrt-25.12 https://github.com/immortalwrt/immortalwrt.git ./openwrt/
           git clone --depth=1 --single-branch --branch openwrt-25.12 https://github.com/immortalwrt/immortalwrt.git ./openwrt/
+
+      - name: Check Scripts
+        run: |
+          find ./ -maxdepth 3 -type f -iregex ".*\(txt\|sh\)$" -exec dos2unix {} \; -exec chmod +x {} \;
           
+      - name: Check Caches
+        id: check-cache
+        uses: actions/cache@main
+        with:
+          key: ${{ runner.os }}-ccache-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-ccache-
+          path: |
+            ./openwrt/.ccache
+            ./openwrt/staging_dir/host*
+            ./openwrt/staging_dir/tool*
+
+      - name: Update Caches
+        run: |
+          if [ -d "./openwrt/staging_dir" ]; then
+            find "./openwrt/staging_dir" -type d -name "stamp" -not -path "*target*" | while read -r DIR; do
+              find "$DIR" -type f -exec touch {} +
+            done
+
+            mkdir -p ./openwrt/tmp && echo "1" > ./openwrt/tmp/.build
+
+            echo "toolchain skiped done!"
+          else
+            echo "caches missed!"
+          fi
+
+          if ${{steps.check-cache.outputs.cache-hit != 'true'}}; then
+            CACHE_LIST=$(gh cache list --key "$WRT_CONFIG-$WRT_INFO" | cut -f 1)
+            for CACHE_KEY in $CACHE_LIST; do
+              gh cache delete $CACHE_KEY
+            done
+            echo "caches cleanup done!"
+          fi
+
+      - name: Update Feeds
+        run: |
           cd openwrt
           ./scripts/feeds update -a
           ./scripts/feeds install -a
@@ -56,39 +97,8 @@ jobs:
         run: |
           chmod +x $GITHUB_WORKSPACE/scripts/check-hy3000-env.sh
           $GITHUB_WORKSPACE/scripts/check-hy3000-env.sh
-
-      # 5. 最大化磁盘空间（避免爆盘）
-      - name: Expand disk space
-        run: |
-          echo "Before cleanup:"
-          df -h
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /opt/ghc
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /opt/hostedtoolcache
-          sudo docker system prune -af || true
-          echo "After cleanup:"
           df -h
           
-
-     # 6. ccache 缓存
-      - name: Cache ccache
-        uses: actions/cache@v4
-        with:
-          path: ~/.ccache
-          key: ${{ runner.os }}-ccache-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-ccache-
-
-      # 7. dl 缓存
-      - name: Cache dl
-        uses: actions/cache@v4
-        with:
-          path: openwrt/dl
-          key: ${{ runner.os }}-dl-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-dl-
-
       # 8. 创建 tag（使用 GITHUB_TOKEN）
       - name: Create tag
         run: |
