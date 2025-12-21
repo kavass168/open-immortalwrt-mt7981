@@ -132,6 +132,12 @@ jobs:
           cd openwrt/bin/targets/mediatek/filogic
           sha256sum *.bin > sha256sum.txt
 
+      # 12. 生成 sha256sum（成功时）
+      - name: Generate sha256sum
+        if: env.BUILD_FAILED != 'true'
+        run: |
+          cp -f ./.config ./openwrt/bin/targets/mediatek/filogic/Build-Config.txt
+
       # 13. 发布 Release（成功时）
       - name: Release firmware
         if: env.BUILD_FAILED != 'true'
@@ -143,6 +149,6 @@ jobs:
             openwrt/bin/targets/mediatek/filogic/*.bin
             openwrt/bin/targets/mediatek/filogic/*.itb
             openwrt/bin/targets/mediatek/filogic/*.fip
-            openwrt/bin/targets/mediatek/filogic/config*.txt
+            openwrt/bin/targets/mediatek/filogic/Build-Config.txt
             openwrt/bin/targets/mediatek/filogic/sha256sum.txt
             openwrt/.config
