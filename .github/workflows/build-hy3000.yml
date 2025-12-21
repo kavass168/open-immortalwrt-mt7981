@@ -38,15 +38,20 @@ jobs:
           chmod +x scripts/check-hy3000-env.sh
           ./scripts/check-hy3000-env.sh
 
-      # 5. 磁盘优化
+     # 5. 最大化磁盘空间（避免爆盘）
       - name: Expand disk space
         run: |
+          echo "Before cleanup:"
+          df -h
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /opt/ghc
           sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/hostedtoolcache
+          sudo docker system prune -af || true
+          echo "After cleanup:"
           df -h
 
-      # 6. ccache 缓存
+     # 6. ccache 缓存
       - name: Cache ccache
         uses: actions/cache@v4
         with:
@@ -64,7 +69,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-dl-
 
-      # 8. 自动创建 tag（不会 403）
+      # 8. 创建 tag（使用 GITHUB_TOKEN）
       - name: Create tag
         run: |
           git config user.name "github-actions"
@@ -74,25 +79,47 @@ jobs:
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} $TAG
           echo "TAG=$TAG" >> $GITHUB_ENV
 
-      # 9. 构建固件
+      # 9. 编译固件（失败时标记 BUILD_FAILED）
       - name: Build firmware
+        id: build_step
         run: |
           cd openwrt
           make defconfig
-          make -j$(nproc)
+          make -j$(nproc) V=s || echo "BUILD_FAILED=true" >> $GITHUB_ENV
 
-      # 10. 生成 sha256sum
+      # 10. 提取最后 500 行错误日志
+      - name: Extract last 500 lines of build log
+        if: env.BUILD_FAILED == 'true'
+        run: |
+          cd openwrt
+          tail -n 500 build.log > ../last_500_lines.txt || true
+
+      # 11. 上传所有日志（失败时）
+      - name: Upload logs
+        if: env.BUILD_FAILED == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build_logs
+          path: |
+            last_500_lines.txt
+            openwrt/build.log
+            openwrt/logs/
+            **/*.txt
+
+      # 12. 生成 sha256sum（成功时）
       - name: Generate sha256sum
+        if: env.BUILD_FAILED != 'true'
         run: |
           cd openwrt/bin/targets/mediatek/filogic
           sha256sum *.bin > sha256sum.txt
 
-      # 11. 发布 Release
+      # 13. 发布 Release（成功时）
       - name: Release firmware
+        if: env.BUILD_FAILED != 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.TAG }}
-          name: "SL3000 ImmortalWrt 25.12 ${{ env.TAG }}"
+          name: "SL3000 WiFi 路由器纯净版 ${{ env.TAG }}"
           files: |
             openwrt/bin/targets/mediatek/filogic/*.bin
             openwrt/bin/targets/mediatek/filogic/sha256sum.txt
