@@ -110,7 +110,6 @@ UPDATE_VERSION "sing-box"
 
 PKG_PATH="$GITHUB_WORKSPACE/openwrt/package/"
 
-
 #修改argon主题字体和颜色
 if [ -d *"luci-theme-argon"* ]; then
 	echo " "
@@ -123,6 +122,4 @@ if [ -d *"luci-theme-argon"* ]; then
 fi
 
 #修改默认主题
-sed -i "s/luci-theme-bootstrap/luci-theme-$WRT_THEME/g" $(find ./feeds/luci/collections/ -type f -name "Makefile")
-
-
+#sed -i "s/luci-theme-bootstrap/luci-theme-$WRT_THEME/g" $(find ./feeds/luci/collections/ -type f -name "Makefile")
