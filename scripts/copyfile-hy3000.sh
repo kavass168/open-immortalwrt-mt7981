@@ -7,4 +7,5 @@ cp $GITHUB_WORKSPACE/hy3000/02_network ./openwrt/target/linux/mediatek/filogic/b
 cp $GITHUB_WORKSPACE/hy3000/platform.sh ./openwrt/target/linux/mediatek/filogic/base-files/lib/upgrade/        
 cp $GITHUB_WORKSPACE/hy3000/11-mt76-caldata ./openwrt/target/linux/mediatek/filogic/base-files/etc/hotplug.d/firmware/ 
 cp $GITHUB_WORKSPACE/hy3000/11_fix_wifi_mac ./openwrt/target/linux/mediatek/filogic/base-files/etc/hotplug.d/ieee80211/
+cp $GITHUB_WORKSPACE/hy3000/mediatek_filogic ./openwrt/package/boot/uboot-tools/uboot-envtools/files/
 cp $GITHUB_WORKSPACE/hy3000/hy3000.conf ./openwrt/.config
