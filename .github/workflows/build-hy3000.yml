@@ -104,8 +104,9 @@ jobs:
 
       - name: Load custom feeds
         run: |
-         # chmod +x $GITHUB_WORKSPACE/scripts/$DIY_P1_SH
-         # $GITHUB_WORKSPACE/scripts/$DIY_P1_SH
+         chmod +x $GITHUB_WORKSPACE/scripts/$DIY_P1_SH
+         cd openwrt
+         $GITHUB_WORKSPACE/scripts/$DIY_P1_SH
 
 
       - name: Update Feeds
@@ -116,8 +117,9 @@ jobs:
           
       - name: Load custom configuration
         run: |
-       #   chmod +x $GITHUB_WORKSPACE/scripts/$DIY_P2_SH
-       #   $GITHUB_WORKSPACE/scripts/$DIY_P2_SH
+          chmod +x $GITHUB_WORKSPACE/scripts/$DIY_P2_SH
+          cd openwrt
+          $GITHUB_WORKSPACE/scripts/$DIY_P2_SH
 
       # 3. 覆盖适配文件到官方源码
       - name: Apply HY3000 device files
