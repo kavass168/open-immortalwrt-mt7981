@@ -115,17 +115,12 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
           
-      - name: Load custom configuration
-        run: |
-          chmod +x $GITHUB_WORKSPACE/scripts/$DIY_P2_SH
-          cd openwrt
-          $GITHUB_WORKSPACE/scripts/$DIY_P2_SH
 
       # 3. 覆盖适配文件到官方源码
       - name: Apply HY3000 device files
         run: |
           chmod +x $GITHUB_WORKSPACE/scripts/copyfile-hy3000.sh
-          cd openwrt
+        
           $GITHUB_WORKSPACE/scripts/copyfile-hy3000.sh
 
       # 4. 运行新版检测脚本（检查 openwrt/ 目录）
