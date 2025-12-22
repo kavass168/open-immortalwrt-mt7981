@@ -86,7 +86,7 @@ jobs:
 
       - name: Update Feeds
         run: |
-          cd openwrt
+          cd ./openwrt/
           ./scripts/feeds update -a
           ./scripts/feeds install -a
           
@@ -107,7 +107,7 @@ jobs:
       - name: Download package
         id: package
         run: |
-          cd openwrt
+          cd ./openwrt/
           make defconfig -j$(nproc) && make clean -j$(nproc)
           make download -j$(nproc)
           
