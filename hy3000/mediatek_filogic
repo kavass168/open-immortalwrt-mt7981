@@ -23,6 +23,7 @@ ubootenv_add_nor_default() {
 
 case "$board" in
 abt,asr3000|\
+philips,hy3000|\
 acer,predator-w6x-ubootmod|\
 asus,zenwifi-bt8-ubootmod|\
 cetron,ct3003-ubootmod|\
@@ -86,7 +87,6 @@ bananapi,bpi-r4|\
 bananapi,bpi-r4-lite|\
 bananapi,bpi-r4-poe|\
 cmcc,rax3000m|\
-philips,hy3000|\
 cmcc,rax3000me|\
 jdcloud,re-cp-03|\
 konka,komi-a31)
