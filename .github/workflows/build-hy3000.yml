@@ -2,6 +2,42 @@ name: Build HY3000 (ImmortalWrt 25.12)
 
 on:
   workflow_dispatch:
+    inputs:
+      device:
+        description: '➡️ 选择设备型号'
+        required: true
+        default: 'philips-hy3000'
+        type: choice
+        options:
+          - 'philips-hy3000'
+          - 'cetron-ct3003'
+          - 'cmcc-a10'
+          - 'cmcc-rax3000m-emmc'
+          - 'cmcc-rax3000m-nand'
+          - 'cmcc-rax3000me-nand'
+          - 'umi-uax3000e'          
+          - 'h3c-magic-nx30-pro'
+          - 'imou-lc-hx3001'
+          - 'nokia-ea0326gmp'
+          - 'newland-nl-wr8103'
+      SOURCE:
+        default: 'immortalwrt/immortalwrt'
+        required: true
+        type: choice
+        options:
+          - VIKINGYFY/immortalwrt
+          - immortalwrt/immortalwrt
+          - LiBwrt/openwrt-6.x
+          - qosmio/openwrt-ipq          
+          
+      BRANCH:
+        default: 'openwrt-25.12'
+        required: true
+        type: choice
+        options:
+          - openwrt-25.12
+          - openwrt-24.10
+          - openwrt-23.05
 
 env:
   DIY_P1_SH: diy-part1.sh
@@ -44,8 +80,8 @@ jobs:
       # 2. 克隆 ImmortalWrt 25.12 官方源码
       - name: Clone ImmortalWrt 25.12
         run: |
-          # git clone --branch openwrt-25.12 https://github.com/immortalwrt/immortalwrt.git ./openwrt/
-          git clone --depth=1 --single-branch --branch openwrt-25.12 https://github.com/immortalwrt/immortalwrt.git ./openwrt/
+          # git clone --branch ${{inputs.BRANCH}} https://github.com/${{inputs.SOURCE}}.git ./openwrt/
+          git clone --depth=1 --single-branch --branch ${{inputs.BRANCH}} https://github.com/${{inputs.SOURCE}}.git ./openwrt/
 
       # 3. ccache 缓存
       - name: Cache ccache
