@@ -1,0 +1,72 @@
+name: Build test
+
+on:
+  workflow_dispatch:
+    inputs:
+      device:
+        description: '➡️ 选择设备型号'
+        required: true
+        default: 'philips-hy3000'
+        type: choice
+        options:
+          - 'philips-hy3000'
+          - 'cetron-ct3003'
+          - 'cmcc-a10'
+          - 'cmcc-rax3000m-emmc'
+          - 'cmcc-rax3000m-nand'
+          - 'cmcc-rax3000me-nand'
+          - 'umi-uax3000e'          
+          - 'h3c-magic-nx30-pro'
+          - 'imou-lc-hx3001'
+          - 'nokia-ea0326gmp'
+          - 'newland-nl-wr8103'
+      SOURCE:
+        default: 'immortalwrt/immortalwrt'
+        required: true
+        type: choice
+        options:
+          - VIKINGYFY/immortalwrt
+          - immortalwrt/immortalwrt
+          - LiBwrt/openwrt-6.x
+          - qosmio/openwrt-ipq          
+          
+      BRANCH:
+        default: 'openwrt-25.12'
+        required: true
+        type: choice
+        options:
+          - openwrt-25.12
+          - openwrt-24.10
+          - openwrt-23.05
+
+env:
+  DIY_P1_SH: diy-part1.sh
+  DIY_P2_SH: diy-part2.sh
+  
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 拉取你自己的仓库
+      - name: Checkout Projects
+        uses: actions/checkout@main
+        
+      - name: Initialization Environment
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          df -h
+        
+          sudo chown $USER:$USER /mnt/build_wrt
+          sudo ln -s /mnt/build_wrt $GITHUB_WORKSPACE/openwrt
+          cd openwrt
+          ls -l
+          cd ./openwrt/staging_dir
+          ls -l
+          df -h
+          
+         
