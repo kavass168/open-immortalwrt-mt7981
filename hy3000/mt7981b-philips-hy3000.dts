@@ -103,7 +103,8 @@
 					};
 				};
 				emmc_rootdisk: block-partition-production {
-							partname = "production";	
+							partname = "production";
+                };
 			};
 		};
 	};
