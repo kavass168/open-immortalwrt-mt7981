@@ -84,6 +84,11 @@ jobs:
           # git clone --branch ${{inputs.BRANCH}} https://github.com/${{inputs.SOURCE}}.git ./openwrt/
           git clone --depth=1 --single-branch --branch ${{inputs.BRANCH}} https://github.com/${{inputs.SOURCE}}.git $GITHUB_WORKSPACE/openwrt/
 
+      - name: Custom Feeds
+        run: |
+#         cd ./openwrt/package/
+
+
       - name: Update Feeds
         run: |
           cd ./openwrt/
