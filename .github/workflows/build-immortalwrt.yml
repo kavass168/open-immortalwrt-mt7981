@@ -95,13 +95,13 @@ jobs:
           cd ./openwrt/
           ./scripts/feeds update -a
           ./scripts/feeds install -a
-          df -h
           
       - name: Custom Packages & Custom Settings
         run: |
-         chmod +x $GITHUB_WORKSPACE/scripts/$DIY_P2_SH
+         ls -l
+         #chmod +x $GITHUB_WORKSPACE/scripts/$DIY_P2_SH
          $GITHUB_WORKSPACE/Scripts/$DIY_P2_SH
-         chmod +x $GITHUB_WORKSPACE/scripts/$DIY_P3_SH
+         #chmod +x $GITHUB_WORKSPACE/scripts/$DIY_P3_SH
          $GITHUB_WORKSPACE/Scripts/$DIY_P3_SH
 
 
