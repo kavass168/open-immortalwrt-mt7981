@@ -15,7 +15,10 @@ git clone --depth=1 https://github.com/destan19/OpenAppFilter.git package/OpenAp
 
 
 # Argon 主题
-rm -rf feeds/luci/applications/luci-app-argon-config
-rm -rf feeds/luci/themes/luci-theme-argon
-git clone --depth=1 https://github.com/sbwml/luci-theme-argon.git package/luci-theme-argon
+#rm -rf feeds/luci/applications/luci-app-argon-config
+#rm -rf feeds/luci/themes/luci-theme-argon
+#git clone --depth=1 https://github.com/sbwml/luci-theme-argon.git package/luci-theme-argon
 #git clone --depth=1 https://github.com/sbwml/luci-theme-argon/tree/openwrt-24.10/luci-app-argon-config package/luci-app-argon-config
+
+cd ./openwrt/package/
+git clone https://github.com/jerrykuku/luci-theme-argon.git
