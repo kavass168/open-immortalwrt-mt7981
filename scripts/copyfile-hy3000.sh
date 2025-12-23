@@ -13,12 +13,10 @@ cp $GITHUB_WORKSPACE/hy3000/hy3000.conf $GITHUB_WORKSPACE/openwrt/.config
 cp $GITHUB_WORKSPACE/hy3000/Makefile $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/
 
 mkdir -p $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/src/configs
-cp $GITHUB_WORKSPACE/hy3000/mt7981_philips_hy3000_defconfig
- $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/src/configs/
+cp $GITHUB_WORKSPACE/hy3000/mt7981_philips_hy3000_defconfig $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/src/configs/
  
 mkdir -p $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/src/arch/arm/dts
-cp $GITHUB_WORKSPACE/hy3000/mt7981-philips-hy3000.dts
- $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/src/arch/arm/dts
+cp $GITHUB_WORKSPACE/hy3000/mt7981-philips-hy3000.dts $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/src/arch/arm/dts/
  
 mkdir -p $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/src/defenvs
 
