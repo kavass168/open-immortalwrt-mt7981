@@ -131,7 +131,7 @@ jobs:
           ls -l
           df -h
           make -j$(nproc) || make -j1 || make -j1 V=s
-          cp -f ./.config ./openwrt/bin/targets/mediatek/filogic/Build-Config.txt
+          
 
       - name: List firmware files
         run: |
@@ -139,13 +139,12 @@ jobs:
           find openwrt/bin -maxdepth 5 -type f || true
           echo "=== mediatek/filogic 下文件 ==="
           if [ -d openwrt/bin/targets/mediatek/filogic ]; then
-            ls -l openwrt/bin/targets/mediatek/filogic || true
+             ls -l openwrt/bin/targets/mediatek/filogic || true
           else
             echo "目录 openwrt/bin/targets/mediatek/filogic 不存在"
           fi
-          ls -l /mnt/build_wrt/staging_dir/target-aarch64_cortex-a53_musl/image/
-          cp /mnt/build_wrt/staging_dir/target-aarch64_cortex-a53_musl/image/*.img /mnt/build_wrt/bin/targets/mediatek/filogic/
-          cp /mnt/build_wrt/staging_dir/target-aarch64_cortex-a53_musl/image/*.bin /mnt/build_wrt/bin/targets/mediatek/filogic/
+
+
 
       - name: Check space usage
         run: |
@@ -178,6 +177,13 @@ jobs:
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} $TAG
           echo "TAG=$TAG" >> $GITHUB_ENV
 
+      - name: Create tag
+        run: |
+          ls -l /mnt/build_wrt/staging_dir/target-aarch64_cortex-a53_musl/image/
+          cp /mnt/build_wrt/staging_dir/target-aarch64_cortex-a53_musl/image/*.img /mnt/build_wrt/bin/targets/mediatek/filogic/
+          cp /mnt/build_wrt/staging_dir/target-aarch64_cortex-a53_musl/image/*.bin /mnt/build_wrt/bin/targets/mediatek/filogic/
+
+           
       - name: Release firmware
         uses: softprops/action-gh-release@v2
         with:
