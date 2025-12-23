@@ -42,6 +42,7 @@ on:
 env:
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
+  DIY_P3_SH: diy-set.sh
   
 permissions:
   contents: write
@@ -95,11 +96,14 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
           
-      - name: Custom Packages
+      - name: Custom Packages & Custom Settings
         run: |
          cd ./openwrt/package/
          chmod +x $GITHUB_WORKSPACE/scripts/$DIY_P2_SH
          $GITHUB_WORKSPACE/Scripts/$DIY_P2_SH
+         cd ./openwrt/
+         chmod +x $GITHUB_WORKSPACE/scripts/$DIY_P3_SH
+         $GITHUB_WORKSPACE/Scripts/$DIY_P3_SH         
 
 
       # 3. 覆盖适配文件到官方源码
