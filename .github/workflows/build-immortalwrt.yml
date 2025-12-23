@@ -195,7 +195,7 @@ jobs:
       - name: Package Firmware
         run: |
           cd ./openwrt/ && mkdir ./upload/
-          mv -f ./bin/targets/mediatek/filogic/"*$DEVICE*".* ./upload/
+          mv -f ./bin/targets/mediatek/filogic/*"$DEVICE"*.* ./upload/
           mv -f ./bin/targets/mediatek/filogic/*mt79*.* ./upload/
           cp -f .config ./upload/Config-"$DEVICE"-"$SOURCE"-"$BRANCH"-"$WRT_DATE".txt
           echo "=== bin 目录结构 ==="
