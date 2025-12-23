@@ -26,6 +26,7 @@ git clone --depth=1 https://github.com/destan19/OpenAppFilter.git package/OpenAp
 cd $PKG_PATH
 #cd ./openwrt/package/
 git clone https://github.com/jerrykuku/luci-theme-argon.git
+git clone https://github.com/jerrykuku/luci-app-argon-config.git
 
 #修改argon主题字体和颜色
 if [ -d *"luci-theme-argon"* ]; then
