@@ -87,17 +87,22 @@ jobs:
   
       - name: Load custom feeds
         run: |
+          cd ./openwrt/
+          ls -l
           chmod +x $GITHUB_WORKSPACE/scripts/$DIY_P1_SH
           $GITHUB_WORKSPACE/scripts/$DIY_P1_SH
 
       - name: Update Feeds
         run: |
           cd ./openwrt/
+          ls -l
           ./scripts/feeds update -a
           ./scripts/feeds install -a
           
       - name: Custom Packages & Custom Settings
         run: |
+         ls -l
+         cd ./openwrt/
          ls -l
          #chmod +x $GITHUB_WORKSPACE/scripts/$DIY_P2_SH
          $GITHUB_WORKSPACE/Scripts/$DIY_P2_SH
@@ -108,12 +113,14 @@ jobs:
       # 3. 覆盖适配文件到官方源码
       - name: Apply HY3000 device files
         run: |
+          cd ./openwrt/
           chmod +x $GITHUB_WORKSPACE/scripts/copyfile-hy3000.sh
           $GITHUB_WORKSPACE/scripts/copyfile-hy3000.sh
 
       # 4. 运行新版检测脚本（检查 openwrt/ 目录）
       - name: Run hy3000 environment check
         run: |
+          cd ./openwrt/
           chmod +x $GITHUB_WORKSPACE/scripts/check-hy3000-env.sh
           $GITHUB_WORKSPACE/scripts/check-hy3000-env.sh
           df -h
