@@ -176,13 +176,7 @@ jobs:
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} $TAG
           echo "TAG=$TAG" >> $GITHUB_ENV
 
-      - name: Create tag
-        run: |
-          ls -l /mnt/build_wrt/staging_dir/target-aarch64_cortex-a53_musl/image/
-          cp /mnt/build_wrt/staging_dir/target-aarch64_cortex-a53_musl/image/*.img /mnt/build_wrt/bin/targets/mediatek/filogic/
-          cp /mnt/build_wrt/staging_dir/target-aarch64_cortex-a53_musl/image/*.bin /mnt/build_wrt/bin/targets/mediatek/filogic/
-
-           
+          
       - name: Release firmware
         uses: softprops/action-gh-release@v2
         with:
@@ -190,3 +184,12 @@ jobs:
           name: "hy3000 ${{ env.TAG }}"
           files: |
             openwrt/bin/targets/mediatek/filogic/*
+
+      - name:  check file
+        run: |
+          cd ./openwrt/ && mkdir ./upload/
+          cp -f ./.config ./upload/Build-Config.txt
+          ls -l /mnt/build_wrt/staging_dir/target-aarch64_cortex-a53_musl/image/
+          cp /mnt/build_wrt/staging_dir/target-aarch64_cortex-a53_musl/image/*.img ./upload/
+          cp /mnt/build_wrt/staging_dir/target-aarch64_cortex-a53_musl/image/*.bin ./upload/
+          
