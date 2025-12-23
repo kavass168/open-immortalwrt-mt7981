@@ -95,6 +95,7 @@ jobs:
           cd ./openwrt/
           ./scripts/feeds update -a
           ./scripts/feeds install -a
+          df -h
           
       - name: Custom Packages & Custom Settings
         run: |
