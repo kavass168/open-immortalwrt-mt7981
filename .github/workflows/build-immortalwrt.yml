@@ -98,7 +98,7 @@ jobs:
           
       - name: Custom Packages & Custom Settings
         run: |
-         cd ./openwrt/package/
+         cd ./openwrt/
          chmod +x $GITHUB_WORKSPACE/scripts/$DIY_P2_SH
          $GITHUB_WORKSPACE/Scripts/$DIY_P2_SH
          cd ./openwrt/
