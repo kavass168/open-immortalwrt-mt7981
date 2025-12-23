@@ -108,5 +108,3 @@ UPDATE_VERSION "sing-box"
 #UPDATE_VERSION "tailscale"
 
 
-PKG_PATH="$GITHUB_WORKSPACE/openwrt/package/"
-
