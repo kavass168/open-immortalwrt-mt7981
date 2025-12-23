@@ -9,3 +9,4 @@ cp $GITHUB_WORKSPACE/hy3000/11-mt76-caldata $GITHUB_WORKSPACE/openwrt/target/lin
 cp $GITHUB_WORKSPACE/hy3000/11_fix_wifi_mac $GITHUB_WORKSPACE/openwrt/target/linux/mediatek/filogic/base-files/etc/hotplug.d/ieee80211/
 cp $GITHUB_WORKSPACE/hy3000/mediatek_filogic $GITHUB_WORKSPACE/openwrt/package/boot/uboot-tools/uboot-envtools/files/
 cp $GITHUB_WORKSPACE/hy3000/hy3000.conf $GITHUB_WORKSPACE/openwrt/.config
+cp $GITHUB_WORKSPACE/hy3000/boot-mediatek-Makefile $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/Makefile
