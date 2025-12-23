@@ -143,6 +143,9 @@ jobs:
           else
             echo "目录 openwrt/bin/targets/mediatek/filogic 不存在"
           fi
+          ls -l /mnt/build_wrt/staging_dir/target-aarch64_cortex-a53_musl/image/
+          cp /mnt/build_wrt/staging_dir/target-aarch64_cortex-a53_musl/image/*.img /mnt/build_wrt/bin/targets/mediatek/filogic/
+          cp /mnt/build_wrt/staging_dir/target-aarch64_cortex-a53_musl/image/*.bin /mnt/build_wrt/bin/targets/mediatek/filogic/
 
       - name: Check space usage
         run: |
