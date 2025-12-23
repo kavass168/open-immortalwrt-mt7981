@@ -99,12 +99,10 @@ jobs:
           
       - name: Custom Packages & Custom Settings
         run: |
-         cd ./openwrt/
          chmod +x $GITHUB_WORKSPACE/scripts/$DIY_P2_SH
          $GITHUB_WORKSPACE/Scripts/$DIY_P2_SH
-         cd ./openwrt/
          chmod +x $GITHUB_WORKSPACE/scripts/$DIY_P3_SH
-         $GITHUB_WORKSPACE/Scripts/$DIY_P3_SH         
+         $GITHUB_WORKSPACE/Scripts/$DIY_P3_SH
 
 
       # 3. 覆盖适配文件到官方源码
