@@ -195,9 +195,12 @@ jobs:
       - name: Package Firmware
         run: |
           cd ./openwrt/ && mkdir ./upload/
-          mv -f openwrt/bin/targets/mediatek/filogic/"*$DEVICE*".* ./upload/
-          mv -f openwrt/bin/targets/mediatek/filogic/*mt79*.* ./upload/
+          mv -f ./bin/targets/mediatek/filogic/"*$DEVICE*".* ./upload/
+          mv -f ./bin/targets/mediatek/filogic/*mt79*.* ./upload/
           cp -f .config ./upload/Config-"$DEVICE"-"$SOURCE"-"$BRANCH"-"$WRT_DATE".txt
+          echo "=== bin 目录结构 ==="
+          find ./staging_dir/ -type f -iname "*ddr4*"
+          find ./build_dir/ -type f -iname "*ddr4*"
           make clean -j$(nproc)          
           
       - name: Release Firmware
