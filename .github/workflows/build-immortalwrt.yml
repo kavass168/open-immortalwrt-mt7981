@@ -3,7 +3,7 @@ name: Build ImmortalWrt SOC
 on:
   workflow_dispatch:
     inputs:
-      device:
+      DEVICE:
         description: '➡️ 选择设备型号'
         required: true
         default: 'philips-hy3000'
@@ -78,6 +78,12 @@ jobs:
           sudo ln -s /mnt/build_wrt $GITHUB_WORKSPACE/openwrt
           df -h
          
+      - name: Initialization Values
+        run: |
+          echo "WRT_DATE=$(TZ=UTC-8 date +"%y.%m.%d-%H.%M.%S")" >> $GITHUB_ENV
+          echo "WRT_KVER=none" >> $GITHUB_ENV
+          echo "WRT_LIST=none" >> $GITHUB_ENV
+          
 
       # 2. 克隆 ImmortalWrt 25.12 官方源码
       - name: Clone ImmortalWrt 25.12
@@ -172,34 +178,34 @@ jobs:
           fi
           echo "✅ 找到 $COUNT 个固件相关文件"
 
-      - name: Generate sha256sum
+
+      - name: Machine Information
         run: |
-          cd openwrt/bin/targets/mediatek/filogic
-          sha256sum * > sha256sum.txt
+          cd ./openwrt/
 
-      - name: Create tag
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          TAG="v$(date +'%Y%m%d')-${{ github.run_number }}"
-          git tag $TAG
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} $TAG
-          echo "TAG=$TAG" >> $GITHUB_ENV
+          echo "======================="
+          lscpu | grep -E "name|Core|Thread"
+          echo "======================="
+          df -h
+          echo "======================="
+          du -h --max-depth=1
+          echo "======================="
 
-          
-      - name: Release firmware
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ env.TAG }}
-          name: "hy3000 ${{ env.TAG }}"
-          files: |
-            openwrt/bin/targets/mediatek/filogic/*
 
-      - name:  check file
+      - name: Package Firmware
         run: |
           cd ./openwrt/ && mkdir ./upload/
-          cp -f ./.config ./upload/Build-Config.txt
-          ls -l /mnt/build_wrt/staging_dir/target-aarch64_cortex-a53_musl/image/
-          cp /mnt/build_wrt/staging_dir/target-aarch64_cortex-a53_musl/image/*.img ./upload/
-          cp /mnt/build_wrt/staging_dir/target-aarch64_cortex-a53_musl/image/*.bin ./upload/
+          mv -f openwrt/bin/targets/mediatek/filogic/"*$DEVICE*".* ./upload/
+          mv -f openwrt/bin/targets/mediatek/filogic/*mt79*.* ./upload/
+          cp -f .config ./upload/Config-"$DEVICE"-"$SOURCE"-"$BRANCH"-"$WRT_DATE".txt
+          make clean -j$(nproc)          
           
+      - name: Release Firmware
+        uses: softprops/action-gh-release@master
+        with:
+          tag_name: $DEVICE-$SOURCE-$BRANCH-$WRT_DATE
+          files: ./openwrt/upload/*.*
+          body: |
+            请注意选择你需要的设备固件！
+
+ 
