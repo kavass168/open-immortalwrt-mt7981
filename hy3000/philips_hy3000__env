@@ -1,2 +1,2 @@
 bootargs=root=/dev/fit0 rootwait
-bootconf=config-1#mt7981b-cmcc-rax3000m-emmc
+bootconf=config-1#mt7981b-philips-hy3000
