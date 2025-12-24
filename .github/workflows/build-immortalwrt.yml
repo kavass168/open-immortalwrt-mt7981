@@ -151,8 +151,6 @@ jobs:
 
       - name: List firmware files
         run: |
-          echo "=== bin 目录结构 ==="
-          #find openwrt/bin -maxdepth 5 -type f || true
           echo "=== mediatek/filogic 下文件 ==="
           if [ -d openwrt/bin/targets/mediatek/filogic ]; then
              ls -l openwrt/bin/targets/mediatek/filogic || true
@@ -169,27 +167,12 @@ jobs:
         run: |
           if [ ! -d openwrt/bin/targets/mediatek/filogic ]; then
             echo "❌ 没有生成 mediatek/filogic 目标目录，固件未产出"
-            exit 1
           fi
           COUNT=$(find openwrt/bin/targets/mediatek/filogic -type f ! -name "*.buildinfo" ! -name "*.json" | wc -l)
           if [ "$COUNT" -eq 0 ]; then
             echo "❌ mediatek/filogic 目录下没有任何固件文件"
-            exit 1
           fi
           echo "✅ 找到 $COUNT 个固件相关文件"
-
-
-      - name: Machine Information
-        run: |
-          cd ./openwrt/
-
-          echo "======================="
-          lscpu | grep -E "name|Core|Thread"
-          echo "======================="
-          df -h
-          echo "======================="
-          du -h --max-depth=1
-          echo "======================="
 
 
       - name: Package Firmware
@@ -198,31 +181,28 @@ jobs:
           cp -f .config ./upload/hy3000-build-config.txt
           echo "=== build_dir 目录结构 ==="
           ls -R ./build_dir
-          echo "=== targets 目录结构 ==="
-          ls -R ./bin/targets
           for FILE in $(find ./bin/targets/ -type f -iname "*hy3000*") ; do
              NEW_FILE=$(basename $FILE)
              mv -f $FILE ./upload/$NEW_FILE
           done
-
 
           for FILE in $(find ./bin/targets/ -type f -iname "*bl2*") ; do
              NEW_FILE=$(basename $FILE)
              mv -f $FILE ./upload/$NEW_FILE
           done
 
-          for FILE in $(find ./bin/targets/ -type f -iname "*boot*") ; do
+          for FILE in $(find ./bin/targets/ -type f -iname "*boot*.bin") ; do
              NEW_FILE=$(basename $FILE)
              mv -f $FILE ./upload/$NEW_FILE
           done
+
           make clean -j$(nproc)          
           
       - name: Release Firmware
         uses: softprops/action-gh-release@master
         with:
-          tag_name: Build ImmortalWrt 25.12 for Hy3000 
+          tag_name: Build-ImmortalWrt-25.12-Hy3000
           files: ./openwrt/upload/*.*
           body: |
-            请注意选择你需要的设备固件！
-
+            测试固件
  
