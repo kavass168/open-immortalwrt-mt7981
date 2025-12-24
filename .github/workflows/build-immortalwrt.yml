@@ -196,10 +196,10 @@ jobs:
         run: |
           cd ./openwrt/ && mkdir ./upload/
           cp -f .config ./upload/Config-"$DEVICE"-"$SOURCE"-"$BRANCH"-"$WRT_DATE".txt
-          echo "=== bin 目录结构 ==="
-          find ./build_dir/ -type f -iname "*ddr4*"
-          # find ./build_dir/
-
+          echo "=== build_dir 目录结构 ==="
+          ls -R ./build_dir
+          echo "=== targets 目录结构 ==="
+          ls -R ./bin/targets
           for FILE in $(find ./bin/targets/ -type f -iname "*$DEVICE*") ; do
              NAME=$(basename $FILE)
              NEW_FILE="$BRANCH"-"$NAME"
