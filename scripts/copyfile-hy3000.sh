@@ -9,13 +9,13 @@ cp $GITHUB_WORKSPACE/hy3000/11-mt76-caldata $GITHUB_WORKSPACE/openwrt/target/lin
 cp $GITHUB_WORKSPACE/hy3000/11_fix_wifi_mac $GITHUB_WORKSPACE/openwrt/target/linux/mediatek/filogic/base-files/etc/hotplug.d/ieee80211/
 cp $GITHUB_WORKSPACE/hy3000/mediatek_filogic $GITHUB_WORKSPACE/openwrt/package/boot/uboot-tools/uboot-envtools/files/
 cp $GITHUB_WORKSPACE/hy3000/hy3000.conf $GITHUB_WORKSPACE/openwrt/.config
-
 mv -f $GITHUB_WORKSPACE/hy3000/boot-uboot-makefile $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/Makefile
-mkdir -p $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/src/configs
-cp $GITHUB_WORKSPACE/hy3000/mt7981_philips_hy3000_defconfig $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/src/configs/
- 
-mkdir -p $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/src/arch/arm/dts
-cp $GITHUB_WORKSPACE/hy3000/mt7981-philips-hy3000.dts $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/src/arch/arm/dts/
- 
-mkdir -p $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/src/defenvs
-
+grep -q "philips_hy3000" "$GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/Makefile"
+if [ $? -ne 0 ]; then
+    echo "❌ Makefile 更新不成功"
+    exit 1
+else
+    echo "✅ Makefile 更新成功"
+fi
+echo "✅ 更新成功补丁"
+cp $GITHUB_WORKSPACE/hy3000/437-add-cmcc_rax3000m.patch $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/patches/
