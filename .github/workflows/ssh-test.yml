@@ -1,4 +1,4 @@
-name: Build ImmortalWrt SOC
+name: Build test ssh
 
 on:
   workflow_dispatch:
