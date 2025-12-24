@@ -80,9 +80,7 @@ jobs:
          
       - name: Initialization Values
         run: |
-          echo "WRT_DATE=$(TZ=UTC-8 date +"%y.%m.%d-%H.%M.%S")" >> $GITHUB_ENV
-          echo "WRT_KVER=none" >> $GITHUB_ENV
-          echo "WRT_LIST=none" >> $GITHUB_ENV
+          # echo "WRT_LIST=none" >> $GITHUB_ENV
           
 
       # 2. 克隆 ImmortalWrt 25.12 官方源码
