@@ -10,8 +10,7 @@ cp $GITHUB_WORKSPACE/hy3000/11_fix_wifi_mac $GITHUB_WORKSPACE/openwrt/target/lin
 cp $GITHUB_WORKSPACE/hy3000/mediatek_filogic $GITHUB_WORKSPACE/openwrt/package/boot/uboot-tools/uboot-envtools/files/
 cp $GITHUB_WORKSPACE/hy3000/hy3000.conf $GITHUB_WORKSPACE/openwrt/.config
 
-mv cp $GITHUB_WORKSPACE/hy3000/boot-uboot-makefile $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/Makefile
-
+mv -f $GITHUB_WORKSPACE/hy3000/boot-uboot-makefile $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/Makefile
 mkdir -p $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/src/configs
 cp $GITHUB_WORKSPACE/hy3000/mt7981_philips_hy3000_defconfig $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/src/configs/
  
