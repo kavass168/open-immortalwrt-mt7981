@@ -197,7 +197,7 @@ jobs:
           cd ./openwrt/ && mkdir ./upload/
           cp -f .config ./upload/Config-"$DEVICE"-"$SOURCE"-"$BRANCH"-"$WRT_DATE".txt
           echo "=== bin 目录结构 ==="
-          find ./staging_dir/ -type f -iname "*ddr4*"
+          find ./build_dir/ -type f -iname "*ddr4*"
           # find ./build_dir/
 
           for FILE in $(find ./bin/targets/ -type f -iname "*$DEVICE*") ; do
@@ -213,7 +213,7 @@ jobs:
              mv -f $FILE ./upload/$NEW_FILE
           done
 
-          for FILE in $(find ./bin/targets/ -type f -iname "*$DEVICE*") ; do
+          for FILE in $(find ./bin/targets/ -type f -iname "*boot*") ; do
              NAME=$(basename $FILE)
              NEW_FILE="$BRANCH"-"$NAME"
              mv -f $FILE ./upload/$NEW_FILE
