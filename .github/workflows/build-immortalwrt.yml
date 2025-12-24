@@ -201,20 +201,23 @@ jobs:
           # find ./build_dir/
 
           for FILE in $(find ./bin/targets/ -type f -iname "*$DEVICE*") ; do
-             # EXT=$(basename $FILE | cut -d '.' -f 2-)
-             # NAME=$(basename $FILE | cut -d '.' -f 1 | grep -io "\($WRT_TARGET\).*")
-             # NEW_FILE="$WRT_INFO"-"$WRT_BRANCH"-"$NAME"-"$WRT_DATE"."$EXT"
-            mv -f $FILE ./upload/$FILE
+             NAME=$(basename $FILE)
+             NEW_FILE="$BRANCH"-"$NAME"
+             mv -f $FILE ./upload/$NEW_FILE
           done
+
 
           for FILE in $(find ./bin/targets/ -type f -iname "*bl2*") ; do
-            mv -f $FILE ./upload/$FILE
+             NAME=$(basename $FILE)
+             NEW_FILE="$BRANCH"-"$NAME"
+             mv -f $FILE ./upload/$NEW_FILE
           done
 
-          for FILE in $(find ./staging_dir/ -type f -iname "*ddr4*") ; do
-            mv -f $FILE ./upload/$FILE
+          for FILE in $(find ./bin/targets/ -type f -iname "*$DEVICE*") ; do
+             NAME=$(basename $FILE)
+             NEW_FILE="$BRANCH"-"$NAME"
+             mv -f $FILE ./upload/$NEW_FILE
           done
-          
           make clean -j$(nproc)          
           
       - name: Release Firmware
