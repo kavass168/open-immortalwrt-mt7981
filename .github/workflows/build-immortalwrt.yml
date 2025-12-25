@@ -31,10 +31,11 @@ on:
           - qosmio/openwrt-ipq          
           
       BRANCH:
-        default: 'openwrt-25.12'
+        default: 'main'
         required: true
         type: choice
-        options:
+        options:      
+          - main
           - openwrt-25.12
           - openwrt-24.10
           - openwrt-23.05
