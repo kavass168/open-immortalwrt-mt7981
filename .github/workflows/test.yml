@@ -1,9 +1,9 @@
-name: Build test
+name: Build test ssh
 
 on:
   workflow_dispatch:
     inputs:
-      device:
+      DEVICE:
         description: '➡️ 选择设备型号'
         required: true
         default: 'philips-hy3000'
@@ -38,10 +38,17 @@ on:
           - openwrt-25.12
           - openwrt-24.10
           - openwrt-23.05
+          
+      ssh:
+        description: 'SSH connection to Actions'
+        required: false
+        default: 'false'
+
 
 env:
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
+  DIY_SET_SH: diy-seting.sh
   
 permissions:
   contents: write
@@ -60,13 +67,94 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           df -h
-        
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android
+          sudo rm -rf /opt/ghc /opt/hostedtoolcache
+          df -h
+          sudo -E apt -yqq purge firefox
+          sudo -E apt -yqq update
+          sudo -E apt -yqq full-upgrade
+          sudo -E apt -yqq autoremove --purge
+          sudo -E apt -yqq autoclean
+          sudo -E apt -yqq clean
+          sudo -E apt -yqq install dos2unix libfuse-dev python3 python3-netifaces python3-pyelftools python3-setuptools libpython3-dev
+          sudo bash -c 'bash <(curl -sL https://build-scripts.immortalwrt.org/init_build_environment.sh)'
+          sudo -E systemctl daemon-reload
+          sudo -E timedatectl set-timezone "Asia/Shanghai"
+          
+          sudo mkdir -p /mnt/build_wrt
           sudo chown $USER:$USER /mnt/build_wrt
           sudo ln -s /mnt/build_wrt $GITHUB_WORKSPACE/openwrt
-          cd openwrt
+          df -h
+         
+      - name: Initialization Values
+        run: |
+          # echo "WRT_LIST=none" >> $GITHUB_ENV
+          
+
+      # 2. 克隆 ImmortalWrt 25.12 官方源码
+      - name: Clone ImmortalWrt 25.12
+        run: |
+          git clone --depth=1 --single-branch --branch ${{inputs.BRANCH}} https://github.com/${{inputs.SOURCE}}.git ./openwrt/
+
+  
+      - name: Load custom feeds
+        run: |
+          cd ./openwrt/
           ls -l
-          cd ./openwrt/staging_dir
+          chmod +x $GITHUB_WORKSPACE/scripts/$DIY_P1_SH
+          $GITHUB_WORKSPACE/scripts/$DIY_P1_SH
+
+      - name: Update Feeds
+        run: |
+          cd ./openwrt/
           ls -l
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+          
+      - name: Custom Packages & Custom Settings
+        run: |
+         ls -l
+         cd ./openwrt/
+         ls -l
+         chmod +x $GITHUB_WORKSPACE/scripts/$DIY_P2_SH
+         $GITHUB_WORKSPACE/scripts/$DIY_P2_SH
+         chmod +x $GITHUB_WORKSPACE/scripts/$DIY_SET_SH
+         $GITHUB_WORKSPACE/scripts/$DIY_SET_SH
+
+
+      # 3. 覆盖适配文件到官方源码
+      - name: Apply HY3000 device files
+        run: |
+          cd ./openwrt/
+          chmod +x $GITHUB_WORKSPACE/scripts/copyfile-hy3000.sh
+          $GITHUB_WORKSPACE/scripts/copyfile-hy3000.sh
+
+      # 4. 运行新版检测脚本（检查 openwrt/ 目录）
+      - name: Run hy3000 environment check
+        run: |
+          cd ./openwrt/
+          chmod +x $GITHUB_WORKSPACE/scripts/check-hy3000-env.sh
+          $GITHUB_WORKSPACE/scripts/check-hy3000-env.sh
           df -h
           
-         
+      - name: Download package
+        id: package
+        run: |
+          cd ./openwrt/
+          make defconfig -j$(nproc) && make clean -j$(nproc)
+          make download -j$(nproc)
+          
+
+      #  编译固件
+#      - name: Build firmware
+#        id: build_step
+#        run: |
+#          cd ./openwrt/
+#          make -j$(nproc) || make -j1 || make -j1 V=s
+          
+      - name: SSH connection to Actions
+        uses: P3TERX/ssh2actions@v1.0.0
+        if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
+        env:
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
