@@ -187,7 +187,7 @@ jobs:
 
 
           rm -rf $(find ./bin/targets/ -iregex ".*\(json\|manifest\|sha256sums\|packages\)$")
-          ls -l ./bin/targets
+          ls -l ./bin/targets/
           cp -rf $(find ./bin/targets/ -type f -iname "*.*") ./upload/
           make clean -j$(nproc) 
           
@@ -199,7 +199,7 @@ jobs:
       - name: Release Firmware
         uses: softprops/action-gh-release@master
         with:
-          tag_name: ${{inputs.SOURCE}}-${{inputs.BRANCH}}-${{inputs.DEVICE}}-$(TZ=UTC-8 date +"%y.%m.%d-%H.%M.%S")
+          tag_name: ${{inputs.SOURCE}}-${{inputs.BRANCH}}-${{inputs.DEVICE}}
           files: ./openwrt/upload/*.*
           body: |
             测试固件
