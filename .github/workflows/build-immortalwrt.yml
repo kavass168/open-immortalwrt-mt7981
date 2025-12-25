@@ -152,14 +152,9 @@ jobs:
           ls -l
           df -h
           make -j$(nproc) || make -j1 || make -j1 V=s
-          
-      - name: SSH connection to Actions
-        uses: P3TERX/ssh2actions@v1.0.0
-        if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
-        env:
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          
+
+      #   -----------------     SSH --------------    
+
       - name: List firmware files
         run: |
           echo "=== mediatek/filogic 下文件 ==="
@@ -193,7 +188,8 @@ jobs:
           echo "=== build_dir 目录结构 ==="
 
 
-          rm -rf $(find ./bin/targets/ -iregex ".*\(json\|manifest\|buildinfo\|sha256sums\|packages\)$")
+          rm -rf $(find ./bin/targets/ -iregex ".*\(json\|manifest\|sha256sums\|packages\)$")
+          ls -l ./bin/targets
           cp -rf $(find ./bin/targets/ -type f -iname "*.*") ./upload/
           make clean -j$(nproc) 
           
@@ -208,5 +204,12 @@ jobs:
           tag_name: Build-ImmortalWrt-25.12-${{inputs.DEVICE}}
           files: ./openwrt/upload/*.*
           body: |
-            测试固件
- 
+            固件
+
+      - name: SSH connection to Actions
+        uses: P3TERX/ssh2actions@v1.0.0
+        if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
+        env:
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          
