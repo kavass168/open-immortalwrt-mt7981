@@ -10,15 +10,11 @@ on:
         type: choice
         options:
           - 'philips-hy3000'
-          - 'cetron-ct3003'
           - 'cmcc-a10'
           - 'cmcc-rax3000m-emmc'
-          - 'cmcc-rax3000m-nand'
-          - 'cmcc-rax3000me-nand'
           - 'umi-uax3000e'          
           - 'h3c-magic-nx30-pro'
           - 'imou-lc-hx3001'
-          - 'nokia-ea0326gmp'
           - 'newland-nl-wr8103'
       SOURCE:
         default: 'immortalwrt/immortalwrt'
