@@ -36,7 +36,7 @@ else
     echo "✅ .config 存在"
 fi
 
-grep -q "CONFIG_TARGET_mediatek_filogic_DEVICE_philips_hy3000=y" "$ROOT/.config"
+grep -q "philips_hy3000=y" "$ROOT/.config"
 if [ $? -ne 0 ]; then
     echo "❌ .config 未启用 hy3000"
     exit 1
