@@ -25,17 +25,19 @@ on:
         required: true
         type: choice
         options:
-          - VIKINGYFY/immortalwrt
           - immortalwrt/immortalwrt
+          - VIKINGYFY/immortalwrt          
           - LiBwrt/openwrt-6.x
           - qosmio/openwrt-ipq          
           
       BRANCH:
-        default: 'main'
+        default: 'master'
         required: true
         type: choice
         options:      
+          - master
           - main
+          - owrt
           - openwrt-25.12
           - openwrt-24.10
           - openwrt-23.05
