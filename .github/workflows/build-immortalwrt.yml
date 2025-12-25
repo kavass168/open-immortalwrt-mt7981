@@ -199,10 +199,10 @@ jobs:
       - name: Release Firmware
         uses: softprops/action-gh-release@master
         with:
-          tag_name: Build-ImmortalWrt-25.12-${{inputs.DEVICE}}
+          tag_name: ${{inputs.SOURCE}}-${{inputs.BRANCH}}-${{inputs.DEVICE}}-$(TZ=UTC-8 date +"%y.%m.%d-%H.%M.%S")
           files: ./openwrt/upload/*.*
           body: |
-            固件
+            测试固件
 
       - name: SSH connection to Actions
         uses: P3TERX/ssh2actions@v1.0.0
