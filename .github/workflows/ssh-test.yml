@@ -146,13 +146,11 @@ jobs:
           
 
       #  编译固件
-      - name: Build firmware
-        id: build_step
-        run: |
-          cd ./openwrt/
-          ls -l
-          df -h
-          make -j$(nproc) || make -j1 || make -j1 V=s
+#      - name: Build firmware
+#        id: build_step
+#        run: |
+#          cd ./openwrt/
+#          make -j$(nproc) || make -j1 || make -j1 V=s
           
       - name: SSH connection to Actions
         uses: P3TERX/ssh2actions@v1.0.0
