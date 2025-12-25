@@ -38,7 +38,11 @@ on:
           - openwrt-25.12
           - openwrt-24.10
           - openwrt-23.05
-
+      ssh:
+        description: 'SSH connection to Actions'
+        required: false
+        default: 'false'
+        
 env:
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
@@ -148,7 +152,13 @@ jobs:
           df -h
           make -j$(nproc) || make -j1 || make -j1 V=s
           
-
+      - name: SSH connection to Actions
+        uses: P3TERX/ssh2actions@v1.0.0
+        if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
+        env:
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          
       - name: List firmware files
         run: |
           echo "=== mediatek/filogic 下文件 ==="
