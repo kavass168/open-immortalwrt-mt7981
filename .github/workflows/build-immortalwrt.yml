@@ -199,7 +199,8 @@ jobs:
       - name: Release Firmware
         uses: softprops/action-gh-release@master
         with:
-          tag_name: ${{inputs.SOURCE}}-${{inputs.BRANCH}}-${{inputs.DEVICE}}-${{env.WRT_DATE}}
+          tag_name: ${{inputs.SOURCE}}-${{inputs.BRANCH}}-${{inputs.DEVICE}}-
+          #${{env.WRT_DATE}}
           files: ./openwrt/upload/*.*
           body: |
             测试固件
