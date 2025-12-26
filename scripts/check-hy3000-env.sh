@@ -39,5 +39,5 @@ else
     echo "✅ .config 已启用 hy3000"
 fi
 
-echo "=== ✅ hy3000 构建环境自检通过（openwrt/）==="
+echo "=== ✅ hy3000 构建环境自检完成（openwrt/）==="
 exit 0
