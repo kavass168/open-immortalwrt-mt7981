@@ -47,8 +47,8 @@ env:
   DIY_P2_SH: diy-part2.sh
   DIY_SET_SH: diy-seting.sh
   
-permissions:
-  contents: write
+#CI权限
+permissions: write-all
 
 jobs:
   build:
@@ -190,7 +190,7 @@ jobs:
           ls -l ./bin/targets/
           cp -rf $(find ./bin/targets/ -type f -iname "*.*") ./upload/
           make clean -j$(nproc) 
-          
+          echo "WRT_DATE=$(TZ=UTC-8 date +"%y.%m.%d-%H.%M.%S")" >> $GITHUB_ENV
 #          for FILE in $(find ./bin/targets/ -type f -iname "*hy3000*") ; do
 #             NEW_FILE=$(basename $FILE)
 #             mv -f $FILE ./upload/$NEW_FILE
@@ -199,10 +199,13 @@ jobs:
       - name: Release Firmware
         uses: softprops/action-gh-release@master
         with:
-          tag_name: ${{inputs.SOURCE}}-${{inputs.BRANCH}}-${{inputs.DEVICE}}
+          tag_name: ${{inputs.SOURCE}}-${{inputs.BRANCH}}-${{inputs.DEVICE}}-${{env.WRT_DATE}}
           files: ./openwrt/upload/*.*
           body: |
             测试固件
+            源码：${{inputs.SOURCE}}
+            分支：${{inputs.BRANCH}
+            型号：${{inputs.DEVICE}}
 
       - name: SSH connection to Actions
         uses: P3TERX/ssh2actions@v1.0.0
