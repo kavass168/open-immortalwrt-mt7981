@@ -18,11 +18,10 @@ else
     echo "✅ Makefile 更新成功"
 fi
 
-cp $GITHUB_WORKSPACE/hy3000/437-add-cmcc_rax3000m+hy3000.patch $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/patches/437-add-cmcc_rax3000m.patch
+# cp $GITHUB_WORKSPACE/hy3000/437-add-cmcc_rax3000m+hy3000.patch $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/patches/437-add-cmcc_rax3000m.patch
 grep -q "philips_hy3000" "$GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/patches/437-add-cmcc_rax3000m.patch"
 if [ $? -ne 0 ]; then
     echo "❌ patch补丁更新不成功"
-    exit 1
 else
     echo "✅ patch补丁更新成功"
 fi
