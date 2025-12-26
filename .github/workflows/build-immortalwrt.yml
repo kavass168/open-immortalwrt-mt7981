@@ -42,8 +42,6 @@ on:
         required: false
         default: 'false'
 
-#CI权限
-permissions: write-all
 
 env:
   DIY_P1_SH: diy-part1.sh
