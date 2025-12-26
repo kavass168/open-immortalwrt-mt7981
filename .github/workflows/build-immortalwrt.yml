@@ -42,6 +42,8 @@ on:
         required: false
         default: 'false'
 
+#CI权限
+permissions: write-all
 
 env:
   DIY_P1_SH: diy-part1.sh
@@ -189,7 +191,7 @@ jobs:
           ls -l ./bin/targets/
           cp -rf $(find ./bin/targets/ -type f -iname "*.*") ./upload/
           make clean -j$(nproc) 
-#          echo "WRT_DATE=$(TZ=UTC-8 date +"%y.%m.%d-%H.%M.%S")" >> $GITHUB_ENV
+          echo "WRT_DATE=$(TZ=UTC-8 date +"%y.%m.%d-%H.%M.%S")" >> $GITHUB_ENV
 #          for FILE in $(find ./bin/targets/ -type f -iname "*hy3000*") ; do
 #             NEW_FILE=$(basename $FILE)
 #             mv -f $FILE ./upload/$NEW_FILE
