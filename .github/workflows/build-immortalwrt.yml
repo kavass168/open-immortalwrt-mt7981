@@ -203,9 +203,6 @@ jobs:
           files: ./openwrt/upload/*.*
           body: |
             测试固件
-            源码：${{inputs.SOURCE}}
-            分支：${{inputs.BRANCH}
-            型号：${{inputs.DEVICE}}
 
       - name: SSH connection to Actions
         uses: P3TERX/ssh2actions@v1.0.0
