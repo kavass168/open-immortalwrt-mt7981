@@ -49,6 +49,9 @@ env:
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
   DIY_SET_SH: diy-seting.sh
+  WRT_DEVICE: ${{inputs.DEVICE}}
+  WRT_BRANCH: ${{inputs.BRANCH}}
+  WRT_SOURCE: ${{inputs.SOURCE}}
 
 
 jobs:
@@ -205,6 +208,9 @@ jobs:
           files: ./openwrt/upload/*.*
           body: |
             测试固件
+            源码：${{env.WRT_SOURCE}}
+            分支：${{env.WRT_BRANCH}}
+            型号：${{env.WRT_DEVICE}}
 
       - name: SSH connection to Actions
         uses: P3TERX/ssh2actions@v1.0.0
