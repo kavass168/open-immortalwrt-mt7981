@@ -21,10 +21,10 @@ fi
 # cp $GITHUB_WORKSPACE/hy3000/437-add-cmcc_rax3000m+hy3000.patch $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/patches/437-add-cmcc_rax3000m.patch
 
 # 删除ax3000m 补丁，替换为hy3000的补丁
-rm $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/patches/437-add-cmcc_rax3000m.patch
-cp $GITHUB_WORKSPACE/hy3000/437-add-philips-hy3000.patch $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/patches/
+# rm $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/patches/437-add-cmcc_rax3000m.patch
+cp $GITHUB_WORKSPACE/hy3000/473-add-philips-hy3000.patch $GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/patches/
 
-grep -q "philips_hy3000" "$GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/patches/437-add-cmcc_rax3000m.patch"
+grep -q "philips_hy3000" "$GITHUB_WORKSPACE/openwrt/package/boot/uboot-mediatek/patches/473-add-philips-hy3000.patch"
 if [ $? -ne 0 ]; then
     echo "❌ patch补丁更新不成功"
 else
