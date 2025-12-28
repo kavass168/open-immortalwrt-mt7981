@@ -142,7 +142,6 @@ jobs:
         run: |
           cd ./openwrt/
           make defconfig -j$(nproc) && make clean -j$(nproc)
-          make download -j$(nproc)
           
 
       #  编译固件
